@@ -1,40 +1,42 @@
-name:  "Terraform CI"
+name: "Terraform CI"
 
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: "eu-west-3" # Mets ta région AWS ici (ex: eu-west-3 pour Paris)
+  AWS_REGION: "eu-west-3"
+  AWS_DEFAULT_REGION: "eu-west-3"
 
 jobs:
-    chechov-test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@master
+  chechov-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            - name: Run Checkov
-              uses: bridgecrewio/checkov-action@master
-              with:
-                directory:
-                soft_fail: true
-                framework: terraform
-    terraform-test:
-         runs-on: ubuntu-latest
-         steps:
-             - name: Checkout code
-               uses: actions/checkout@v4
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          soft_fail: true
+          framework: terraform
 
-             - name: terraform download
-               uses: hashicorp/setup-terraform@v3
+  terraform-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-             - name: terraform init
-               run:  terraform init
-             - name: Terraform plan
-               run:  terraform plan
+      - name: terraform download
+        uses: hashicorp/setup-terraform@v3
 
-  # Mets ta région AWS ici (ex: eu-west-3 pour Paris)
+      - name: terraform init
+        run: terraform init
+
+      - name: Terraform plan
+        run: terraform plan
