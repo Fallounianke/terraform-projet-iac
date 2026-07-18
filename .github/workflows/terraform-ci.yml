@@ -40,3 +40,5 @@ jobs:
 
       - name: Terraform plan
         run: terraform plan
+      - name: Check AWS identity
+        run: aws sts get-caller-identity
